@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manage Movies & Genres - Cine Nest</title>
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* Header */
+    header {
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 10px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    header .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        margin: auto;
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+    .logo img {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+    }
+    .site-name {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--white);
+    }
+    header nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+    header nav a:hover {
+        color: var(--accent-light);
+    }
+
+    /* Slider */
+    .slider {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        background: var(--primary);
+    }
+    .slides-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    .slide {
+        min-width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        color: white;
+        text-align: center;
+        padding: 20px;
+        transition: transform 0.5s ease;
+    }
+    .slide img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.3;
+        z-index: 1;
+    }
+    .slide-info {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+    }
+    .slide h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .slide-desc {
+        font-size: 14px;
+        line-height: 1.6;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+    .slide-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.3);
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 10px 15px;
+        cursor: pointer;
+        z-index: 10;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+    .slide-btn:hover {
+        background: rgba(255,255,255,0.6);
+    }
+    .slide-btn.left {
+        left: 20px;
+    }
+    .slide-btn.right {
+        right: 20px;
+    }
+
+    /* Back Button */
+    .back-button {
+        width: 95%;
+        margin: 15px auto;
+    }
+    .back-button a {
+        text-decoration: none;
+        color: #561c24;
+        background: #fdf6e3;
+        padding: 8px 12px;
+        border-radius: 25px;
+        display: inline-block;
+        font-weight: bold;
+        transition: background 0.3s, color 0.3s;
+    }
+    .back-button a:hover {
+        background: #561c24;
+        color: white;
+    }
+
+    /* Admin Layout */
+    main { width: 90%; margin: 30px auto; color: var(--primary); font-family: Arial, sans-serif; }
+    
+    .panel { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; }
+    .input-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+    .input-row input, .input-row select { flex: 1; min-width: 150px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; }
+    
+    .btn-primary { background-color: var(--accent); color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; border: none; cursor: pointer; font-weight: 600; transition: background 0.3s; font-size: 1em; margin-top: 10px; }
+    .btn-primary:hover { background-color: var(--accent-dark); }
+    .btn-danger { background-color: #dc3545; color: white; padding: 12px 25px; border-radius: 5px; border: none; cursor: pointer; margin-left: 10px; margin-top: 10px; font-weight: 600; transition: background 0.3s; font-size: 1em; }
+    .btn-danger:hover { background-color: #c82333; }
+    
+    .genre-tag { display: inline-block; background: var(--accent-light); padding: 8px 12px; border-radius: 15px; margin-right: 8px; margin-bottom: 8px; font-size: 0.95em; color: var(--primary); }
+    .delete-genre { color: #dc3545; margin-left: 8px; cursor: pointer; font-weight: bold; border: none; background: none; font-size: 1.1em; }
+    .delete-genre:hover { color: #b22222; }
+    
+    /* Search Result List */
+    #searchResults { margin-top: 10px; border: 1px solid #eee; max-height: 200px; overflow-y: auto; background-color: white; z-index: 10; position: absolute; width: calc(50% - 30px); display: none; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; }
+    .search-item:last-child { border-bottom: none; }
+    .search-item:hover { background-color: #f5f5f5; }
+
+    .alert { padding: 15px 20px; margin: 15px 0; border-radius: 5px; font-weight: 500; display: flex; align-items: center; gap: 10px; animation: slideDown 0.3s ease-out; }
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="logo">
+        <img src="/photos/logo.jpg" alt="Movie Community Logo">
+        <span class="site-name">Cine Nest</span>
+      </div>
+      <nav>
+        <a href="/admin/dashboard"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="back-button">
+      <a href="/admin/dashboard"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    <h1 style="margin-bottom:20px;">Manage Movies & Genres</h1>
+
+    <section class="panel">
+      <h2>Add New Movie</h2>
+      <div id="addMovieAlert"></div>
+      <div class="input-row">
+        <input type="text" id="addTitle" placeholder="Movie Title (required)">
+        <input type="number" id="addYear" placeholder="Release Year (required)">
+      </div>
+      <div class="input-row">
+        <input type="text" id="addPoster" placeholder="Poster Image URL (http://...)">
+      </div>
+      <textarea id="addSynopsis" placeholder="Movie Synopsis (optional)..."></textarea>
+      
+      <button class="btn-primary" id="saveNewMovieBtn">
+        <i class="fa-solid fa-plus"></i> Add Movie
+      </button>
+    </section>
+
+    <section class="panel" style="position:relative;">
+      <h2>Edit / Delete Movie</h2>
+      <div id="editMovieAlert"></div>
+      
+      <div class="input-row">
+        <input type="text" id="editSearchInput" placeholder="Search movie to edit..." style="flex: 2;">
+        <button class="btn-primary" id="editSearchBtn" style="flex: 1;">
+          <i class="fa-solid fa-search"></i> Search
+        </button>
+      </div>
+      <div id="searchResults"></div> 
+
+      <div id="editForm" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
+        <input type="hidden" id="editMovieId">
+        
+        <div class="input-row">
+            <input type="text" id="editTitle" placeholder="Movie Title">
+            <input type="number" id="editYear" placeholder="Release Year">
+        </div>
+        <div class="input-row">
+            <input type="text" id="editPoster" placeholder="Poster Image URL">
+        </div>
+        <textarea id="editSynopsis" placeholder="Movie Synopsis..."></textarea>
+
+        <button class="btn-primary" id="updateMovieBtn">
+          <i class="fa-solid fa-save"></i> Save Changes
+        </button>
+        <button class="btn-danger" id="deleteMovieBtn">
+          <i class="fa-solid fa-trash"></i> Delete Movie
+        </button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Manage Genres</h2>
+      <div id="genreAlert"></div>
+      <p class="small-muted" style="margin-bottom:15px;">Existing Genres:</p>
+      
+      <div id="genreList" style="margin-bottom: 20px;">
+        <p style="color: #999;">Loading genres...</p>
+      </div>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+      <div class="input-row">
+        <input type="text" id="newGenreInput" placeholder="Add new genre..." style="flex: 2;">
+        <button class="btn-primary" id="addGenreBtn" style="flex: 1;">
+          <i class="fa-solid fa-plus"></i> Add Genre
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* =========================================
+       MANAGE MOVIES JS LOGIC
+       ========================================= */
+    const API_BASE = "http://localhost:3000";
+
+    // Helper: API Fetcher with error handling
+    async function apiCall(endpoint, method = "GET", body = null) {
+        const options = { 
+            method, 
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            credentials: 'include' 
+        };
+        if (body) options.body = JSON.stringify(body);
+        try {
+            const res = await fetch(API_BASE + endpoint, options);
+            if (!res.ok) {
+                const errMsg = res.status === 401 ? 'Unauthorized - Please log in again' : 
+                               res.status === 403 ? 'You do not have permission' :
+                               `Server error (${res.status})`;
+                throw new Error(errMsg);
+            }
+            return await res.json();
+        } catch (err) {
+            console.error("API Error:", err);
+            throw err;
+        }
+    }
+
+    // Alert helper
+    function showAlert(containerId, message, isSuccess = true) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = `<div class="alert ${isSuccess ? 'alert-success' : 'alert-error'}">
+                ${isSuccess ? '<i class="fa-solid fa-check-circle"></i>' : '<i class="fa-solid fa-exclamation-circle"></i>'} 
+                ${message}
+            </div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Manage Movies Page Loaded");
+        // Initial load
+        loadGenres();
+
+        // 1. ADD MOVIE
+        document.getElementById("saveNewMovieBtn").addEventListener("click", async () => {
+            const title = document.getElementById("addTitle").value.trim();
+            const year = document.getElementById("addYear").value.trim();
+            const poster = document.getElementById("addPoster").value.trim();
+            const synopsis = document.getElementById("addSynopsis").value.trim();
+
+            if (!title || !year) {
+                showAlert("addMovieAlert", "Title and Release Year are required", false);
+                return;
+            }
+
+            try {
+                const res = await apiCall("/admin/movies", "POST", { 
+                    title, 
+                    release_year: parseInt(year), 
+                    poster: poster || null, 
+                    synopsis: synopsis || null 
+                });
+                
+                showAlert("addMovieAlert", `✓ Movie "${title}" added successfully!`, true);
+                // Clear inputs
+                document.getElementById("addTitle").value = "";
+                document.getElementById("addYear").value = "";
+                document.getElementById("addPoster").value = "";
+                document.getElementById("addSynopsis").value = "";
+            } catch (err) {
+                showAlert("addMovieAlert", `Error adding movie: ${err.message}`, false);
+            }
+        });
+
+        // 2. SEARCH MOVIE TO EDIT
+        document.getElementById("editSearchBtn").addEventListener("click", async () => {
+            const query = document.getElementById("editSearchInput").value.toLowerCase().trim();
+            const resultsBox = document.getElementById("searchResults");
+            
+            if (!query) {
+                showAlert("editMovieAlert", "Please enter a movie title to search", false);
+                return;
+            }
+
+            try {
+                const allMovies = await apiCall("/admin/movies"); 
+                if (!allMovies || allMovies.length === 0) {
+                    resultsBox.innerHTML = `<div class="search-item">No movies found in database</div>`;
+                    resultsBox.style.display = "block";
+                    return;
+                }
+
+                const filtered = allMovies.filter(m => m.title.toLowerCase().includes(query));
+
+                resultsBox.innerHTML = "";
+                resultsBox.style.display = filtered.length > 0 ? "block" : "none";
+
+                if (filtered.length === 0) {
+                    resultsBox.innerHTML = `<div class="search-item">No movies found matching "${query}"</div>`;
+                    return;
+                }
+
+                filtered.forEach(m => {
+                    const div = document.createElement("div");
+                    div.className = "search-item";
+                    div.innerText = `${m.title} (${m.release_year})`;
+                    div.onclick = () => loadMovie(m);
+                    resultsBox.appendChild(div);
+                });
+            } catch (err) {
+                showAlert("editMovieAlert", `Error searching movies: ${err.message}`, false);
+            }
+        });
+
+        function loadMovie(movie) {
+            document.getElementById("searchResults").style.display = "none";
+            document.getElementById("editForm").style.display = "block";
+            document.getElementById("editSearchInput").value = movie.title;
+
+            document.getElementById("editMovieId").value = movie.movie_id;
+            document.getElementById("editTitle").value = movie.title;
+            document.getElementById("editYear").value = movie.release_year;
+            document.getElementById("editPoster").value = movie.poster || "";
+            document.getElementById("editSynopsis").value = movie.synopsis || "";
+        }
+
+        // 3. UPDATE MOVIE
+        document.getElementById("updateMovieBtn").addEventListener("click", async () => {
+            const id = document.getElementById("editMovieId").value;
+            const title = document.getElementById("editTitle").value.trim();
+            const year = document.getElementById("editYear").value.trim();
+            const poster = document.getElementById("editPoster").value.trim();
+            const synopsis = document.getElementById("editSynopsis").value.trim();
+
+            if (!title || !year) {
+                showAlert("editMovieAlert", "Title and Release Year are required", false);
+                return;
+            }
+
+            try {
+                await apiCall(`/admin/movies/${id}`, "PUT", { 
+                    title, 
+                    release_year: parseInt(year), 
+                    poster: poster || null, 
+                    synopsis: synopsis || null 
+                });
+                showAlert("editMovieAlert", `✓ Movie "${title}" updated successfully!`, true);
+                document.getElementById("editForm").style.display = "none";
+                document.getElementById("editSearchInput").value = "";
+            } catch (err) {
+                showAlert("editMovieAlert", `Error updating movie: ${err.message}`, false);
+            }
+        });
+
+        // 4. DELETE MOVIE
+        document.getElementById("deleteMovieBtn").addEventListener("click", async () => {
+            const id = document.getElementById("editMovieId").value;
+            const title = document.getElementById("editTitle").value;
+            
+            if(!confirm(`Are you sure you want to delete "${title}"? This action is permanent.`)) return;
+
+            try {
+                await apiCall(`/admin/movies/${id}`, "DELETE");
+                showAlert("editMovieAlert", `✓ Movie deleted successfully!`, true);
+                document.getElementById("editForm").style.display = "none";
+                document.getElementById("editSearchInput").value = "";
+            } catch (err) {
+                showAlert("editMovieAlert", `Error deleting movie: ${err.message}`, false);
+            }
+        });
+
+        // 5. LOAD GENRES
+        async function loadGenres() {
+            const list = document.getElementById("genreList");
+            try {
+                const genres = await apiCall("/admin/genres");
+                if (!genres || genres.length === 0) {
+                    list.innerHTML = "<p style='color:#999;'>No genres created yet.</p>";
+                    return;
+                }
+
+                list.innerHTML = "";
+                genres.forEach(g => {
+                    const span = document.createElement("span");
+                    span.className = "genre-tag";
+                    span.innerHTML = `${g.genre_name} <button class="delete-genre" onclick="deleteGenre(${g.genre_id})">×</button>`;
+                    list.appendChild(span);
+                });
+            } catch (err) {
+                list.innerHTML = `<p style='color:#dc3545;'>Error loading genres: ${err.message}</p>`;
+            }
+        }
+
+        // 6. ADD GENRE
+        document.getElementById("addGenreBtn").addEventListener("click", async () => {
+            const name = document.getElementById("newGenreInput").value.trim();
+            if(!name) {
+                showAlert("genreAlert", "Please enter a genre name", false);
+                return;
+            }
+
+            try {
+                await apiCall("/admin/genres", "POST", { genre_name: name });
+                showAlert("genreAlert", `✓ Genre "${name}" added successfully!`, true);
+                document.getElementById("newGenreInput").value = "";
+                loadGenres();
+            } catch (err) {
+                showAlert("genreAlert", `Error adding genre: ${err.message}`, false);
+            }
+        });
+
+        // 7. DELETE GENRE (globally accessible)
+        window.deleteGenre = async (id) => {
+            if(!confirm("Delete this genre? Movies associated with it will not be affected.")) return;
+
+            try {
+                await apiCall(`/admin/genres/${id}`, "DELETE");
+                showAlert("genreAlert", "✓ Genre deleted successfully!", true);
+                loadGenres();
+            } catch (err) {
+                showAlert("genreAlert", `Error deleting genre: ${err.message}`, false);
+            }
+        };
+    });
+  </script>
+
+</body>
+</html>

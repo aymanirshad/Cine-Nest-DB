@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Role - Cine Nest</title>
+    <link rel="stylesheet" href="log_signup.css">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+          integrity="sha512-...your-integrity-hash..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+      
+        .auth-form {
+            background:#ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+
+        
+        .auth-form h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #561c24;
+        }
+
+        .auth-form p {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .role-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .role-options a {
+            text-decoration: none;
+            padding: 12px 25px;
+            background-color: #561c24;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .role-options a:hover {
+            background-color: #6d2932;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <img src="photos/logo.jpg" alt="Cine Nest Logo">
+            <span class="site-name">Cine Nest</span>
+        </div>
+
+        <div class="auth-form">
+            <h1>Welcome to Cine Nest!</h1>
+            <p>Would you like to sign in as a User or Admin?</p>
+            <div class="role-options">
+                <a href="login.html"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+                <a href="login.html"><i class="fa-solid fa-user"></i> User Login</a>     
+            </div>
+            <!-- Added a Signup link here for convenience -->
+            <p style="margin-top: 20px; font-size: 0.9rem;">
+                New to Cine Nest? <a href="signup.html" style="color: #561c24; font-weight: bold;">Sign Up Here</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

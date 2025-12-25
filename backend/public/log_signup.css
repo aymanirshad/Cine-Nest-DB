@@ -1,0 +1,123 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Colors */
+:root {
+    --primary: #561c24;
+    --secondary: #c7b7a3;
+    --accent-dark: #6d2932;
+    --accent-light: #e8d8c4;
+    --white: #ffffff;
+}
+
+/* Body */
+body {
+    background-color: var(--accent-light);
+    color: var(--primary);
+}
+
+/* Center container */
+.auth-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Logo */
+.auth-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.site-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Form */
+.auth-form {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+}
+
+.auth-form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--primary);
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--accent-light);
+    border-radius: 5px;
+    outline: none;
+}
+
+.auth-form input:focus {
+    border-color: var(--primary);
+}
+
+/* Button */
+.auth-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.auth-btn:hover {
+    background-color: var(--accent-dark);
+}
+
+/* Footer links */
+.auth-form p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.auth-form p a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-form p a:hover {
+    color: var(--accent-dark);
+}

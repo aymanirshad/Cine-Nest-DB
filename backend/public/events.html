@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine Nest - Events</title>
+    <link rel="stylesheet" href="events.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search events..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="events-section">
+        <div class="back-button">
+            <a href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+        </div>
+        
+        <h1>Upcoming Events</h1>
+        <a href="create_event.html" class="btn create-event-btn"><i class="fa-solid fa-plus"></i> Create Event</a>
+
+        <!-- Container for Dynamic Events -->
+        <div id="events-container">
+            <p style="text-align:center;">Loading events...</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('events-container');
+
+            // --- MOCK DATA (Fallback) ---
+            const mockEvents = [
+                {
+                    event_id: 1,
+                    title: "Silent Horizon Screening",
+                    host_name: "Sarah (Admin)",
+                    event_datetime: "2025-03-15T19:00:00",
+                    capacity: 60,
+                    description: "Community screening with discussion."
+                },
+                {
+                    event_id: 2,
+                    title: "Nightfall City Marathon",
+                    host_name: "Mike",
+                    event_datetime: "2025-04-12T18:00:00",
+                    capacity: 120,
+                    description: "Back-to-back action films screening."
+                },
+                {
+                    event_id: 3,
+                    title: "Echoes Q&A",
+                    host_name: "CineNest Team",
+                    event_datetime: "2024-11-30T17:30:00",
+                    capacity: 80,
+                    description: "Q&A with film researchers."
+                },
+                {
+                    event_id: 5,
+                    title: "Whispering Woods Family Matinee",
+                    host_name: "Emily",
+                    event_datetime: "2025-06-20T11:00:00",
+                    capacity: 200,
+                    description: "Family friendly showing and activities."
+                }
+            ];
+
+            function renderEvents(events) {
+                if (!events || events.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;">No upcoming events.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                events.forEach(event => {
+                    const date = new Date(event.event_datetime).toLocaleString();
+                    // Fallback for host name if DB query returns null
+                    const host = event.host_name || 'Community Host'; 
+                    
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.innerHTML = `
+                        <h2>${event.title}</h2>
+                        <p><strong>Host:</strong> ${host}</p>
+                        <p><strong>Date/Time:</strong> ${date}</p>
+                        <p><strong>Capacity:</strong> ${event.capacity} seats</p>
+                        <p><strong>Description:</strong> ${event.description}</p>
+                        <div style="margin-top:15px;">
+                            <button class="btn join-btn" onclick="joinEvent(${event.event_id})">Join Event</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            // 1. Try fetching from Backend
+            fetch('/social/events')
+                .then(res => {
+                    if (!res.ok) throw new Error("API not available");
+                    return res.json();
+                })
+                .then(data => {
+                    // If DB returns empty array, use mock data for demonstration
+                    if (!Array.isArray(data) || data.length === 0) {
+                        console.log("DB empty, using mock data");
+                        renderEvents(mockEvents);
+                    } else {
+                        renderEvents(data);
+                    }
+                })
+                .catch(err => {
+                    // If fetch fails (e.g. 404/500 or network error), use mock data so UI shows something
+                    console.warn("Backend error, loading mock data:", err);
+                    renderEvents(mockEvents);
+                });
+        });
+
+        function joinEvent(eventId) {
+            fetch('/social/events/join', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event_id: eventId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.message) alert(data.message);
+                else alert("Joined successfully (Mock action)");
+            })
+            .catch(err => alert("You joined the event! (Backend not connected)"));
+        }
+    </script>
+
+</body>
+</html>

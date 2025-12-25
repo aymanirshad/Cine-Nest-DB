@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Cine Nest</title>
+    <link rel="stylesheet" href="log_signup.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <img src="photos/logo.jpg" alt="Cine Nest Logo">
+            <span class="site-name">Cine Nest</span>
+        </div>
+
+        <!-- FIXED: action points to Node.js route /login, method is POST -->
+        <form class="auth-form" action="/login" method="POST">
+            <h2>Login</h2>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required minlength="6">
+
+            <button type="submit" class="btn auth-btn">Login</button>
+
+            <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+        </form>
+    </div>
+</body>
+</html>

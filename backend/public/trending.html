@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trending Movies - Cine Nest</title>
+<link rel="stylesheet" href="trending.css">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    /* Ensure track works with dynamic content */
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        gap: 20px;
+    }
+    .movie-card {
+        min-width: 250px; /* Fixed width for carousel items */
+        flex-shrink: 0;
+    }
+</style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+         
+
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="login.html" class="btn login-btn">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Trending Movies Carousel -->
+    <section class="movies-section">
+        <div class="back-button">   
+            <a href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+        </div>
+        <h1>Trending Movies</h1>
+
+        <div class="carousel-container">
+            <!-- Added ID 'trending-track' for JS -->
+            <div class="carousel-track" id="trending-track">
+                <p style="color:white; padding:20px;">Loading Trending Movies...</p>
+            </div>
+
+            <!-- Carousel Controls -->
+            <button class="carousel-btn prev" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="carousel-btn next" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        // 1. Fetch Trending Movies
+        fetch('/api/movies/trending')
+            .then(res => res.json())
+            .then(movies => {
+                const track = document.getElementById('trending-track');
+                track.innerHTML = ''; // Clear loading text
+
+                if (movies.length === 0) {
+                    track.innerHTML = '<p style="color:white;">No trending movies found.</p>';
+                    return;
+                }
+
+                movies.forEach(movie => {
+                    const poster = movie.poster ? movie.poster : 'photos/default.jpg';
+                    const rating = movie.avg_rating || 'N/A';
+                    const views = movie.view_count || 0;
+
+                    const html = `
+                        <div class="movie-card" onclick="location.href='movie_detail.html?id=${movie.movie_id}'" style="cursor:pointer;">
+                            <img src="${poster}" alt="${movie.title}" onerror="this.src='photos/default.jpg'">
+                            <h3>${movie.title}</h3>
+                            <p>${movie.release_year} • Rating: <i class="fa-solid fa-star"></i> ${rating}</p>
+                            <p><i class="fa-solid fa-eye"></i> ${views} views</p>
+                        </div>
+                    `;
+                    track.innerHTML += html;
+                });
+            });
+
+        // 2. Carousel Logic
+        const track = document.getElementById('trending-track');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let index = 0;
+
+        function updateCarousel() {
+            const cardWidth = 270; // Card width + gap (approx)
+            track.style.transform = `translateX(-${index * cardWidth}px)`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            // Prevent scrolling past the end
+            // We assume roughly 4 cards visible, so we stop before the end
+            if (index < track.children.length - 3) {
+                index++;
+                updateCarousel();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (index > 0) {
+                index--;
+                updateCarousel();
+            }
+        });
+
+        // 3. Auth Check
+        fetch('/api/auth-status')
+            .then(res => res.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    document.getElementById('auth-buttons').innerHTML = `
+                        <span style="color:white; margin-right:10px;">Hi, ${data.user.username}</span>
+                        <a href="/logout" class="btn login-btn" style="background-color: #d9534f;">Logout</a>
+                    `;
+                }
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Friends - Cine Nest</title>
+    <link rel="stylesheet" href="friends.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="photos/logo.jpg">
+                <span class="site-name">Cine Nest</span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="friends.html" class="active">Friends</a></li>
+                    <li><a href="dm.html">Messages</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <h2 class="section-title">Your Friends</h2>
+
+    <div class="friends-grid">
+
+        <div class="friend-card">
+            <img src="photos/user1.jpg">
+            <h3>John Doe</h3>
+            <button class="msg-btn" onclick="location.href='dm.html'">Message</button>
+        </div>
+
+        <div class="friend-card">
+            <img src="photos/user2.jpg">
+            <h3>Alex</h3>
+            <button class="msg-btn">Message</button>
+        </div>
+
+    </div>
+
+    <h2 class="section-title">Friend Requests</h2>
+
+    <div class="request-card">
+        <img src="photos/user3.jpg">
+        <div class="info">
+            <h3>Sarah Khan</h3>
+        </div>
+        <div class="actions">
+            <button class="accept">Accept</button>
+            <button class="decline">Decline</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

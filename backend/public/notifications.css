@@ -1,0 +1,218 @@
+/* ===== Global ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+:root {
+    --primary: #561c24;
+    --secondary: #c7b7a3;
+    --accent-dark: #6d2932;
+    --accent-light: #e8d8c4;
+    --white: #ffffff;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--accent-light);
+    color: var(--primary);
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* allows footer to stay at bottom */
+}
+
+/* ===== Header ===== */
+header {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    margin: auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.site-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--white);
+}
+
+/* Navbar */
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: var(--white);
+    text-decoration: none;
+    padding: 5px 0;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    color: var(--accent-light);
+}
+
+/* Main content */
+main {
+    flex: 1;
+    /* lets main content grow and push footer down */
+}
+
+/* Profile Header / Page Title */
+.profile-header {
+    width: 90%;
+    margin: 30px auto 10px auto;
+    text-align: center;
+}
+
+.profile-header h2 {
+    font-size: 2rem;
+    border-bottom: 2px solid var(--accent-dark);
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Back Button */
+.back-button {
+    width: 95%;
+    margin: 15px auto;
+}
+
+.back-button a {
+    text-decoration: none;
+    color: #561c24;
+    background: #fdf6e3;
+    padding: 8px 12px;
+    border-radius: 25px;
+    display: inline-block;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.back-button a:hover {
+    background: #561c24;
+    color: white;
+}
+
+/* Content Section */
+.content {
+    width: 90%;
+    margin: 20px auto;
+}
+
+/* Notification Cards */
+.notification-card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--accent-dark);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notification-card p {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: var(--primary);
+}
+
+.notification-card small {
+    display: block;
+    color: #555;
+    font-size: 12px;
+}
+
+/* ===== Footer ===== */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+
+
+
+
+
+
+
+/* ===== Responsive Adjustments ===== */
+@media screen and (max-width: 900px) {
+    .content {
+        width: 95%;
+    }
+
+    .notification-card {
+        padding: 12px;
+    }
+
+    .back-button a {
+        padding: 7px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    header .container {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+    }
+
+    .profile-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .notification-card {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .back-button a {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+}

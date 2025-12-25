@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Cine Nest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL & HEADER STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        
+        :root {
+            --primary: #561c24;
+            --secondary: #c7b7a3;
+            --accent-dark: #6d2932;
+            --accent-light: #e8d8c4;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--accent-light);
+            color: var(--primary);
+            min-height: 100vh;
+            overflow-y: auto;
+            padding-top: 80px; /* Space for fixed header */
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin: auto;
+        }
+
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 20px; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+        .site-name { color: var(--white); text-decoration: none; }
+        
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: white; text-decoration: none; font-size: 15px; }
+
+        .search-box { display: flex; align-items: center; }
+        .search-box input { padding: 5px; border-radius: 4px 0 0 4px; border: none; outline: none; }
+        .search-box button { padding: 5px 10px; border-radius: 0 4px 4px 0; border: none; cursor: pointer; background: var(--secondary); }
+
+        /* --- CREATE EVENT SPECIFIC CSS --- */
+        .create-event {
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        .create-event h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .back-button { margin-bottom: 20px; }
+        .back-button a {
+            text-decoration: none;
+            color: #561c24;
+            background: #fff5e1;
+            padding: 8px 15px;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            border: 1px solid #e0c9a9;
+            transition: 0.3s;
+        }
+        .back-button a:hover { background: #561c24; color: white; }
+
+        /* Form */
+        .event-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .event-form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            font-size: 16px;
+            background: #fafafa;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea { min-height: 100px; resize: vertical; }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            background: var(--accent-dark);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover { background: var(--primary); }
+
+        footer { text-align: center; padding: 20px; color: var(--primary); margin-top: 40px; }
+
+        /* Responsive */
+        @media screen and (max-width: 900px) {
+            .header-container, nav ul { flex-wrap: wrap; justify-content: center; gap: 10px; }
+        }
+        @media screen and (max-width: 600px) {
+            .header-container { flex-direction: column; align-items: flex-start; }
+            nav ul { flex-direction: column; gap: 5px; width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <section class="create-event">
+        <div class="back-button">
+            <a href="events.html"><i class="fa-solid fa-arrow-left"></i> Back to Events</a>
+        </div>  
+        <h2>Create a new Event</h2>
+
+        <form class="event-form" id="create-event-form">
+            <label for="title">Event Title</label>
+            <input type="text" id="title" placeholder="Enter title" required>
+
+            <label for="movie_id">Select Movie</label>
+            <select id="movie_id">
+                <option value="">-- General Event (No specific movie) --</option>
+                <!-- Added IDs so backend knows which movie -->
+                <option value="1">Avengers: Endgame</option>
+                <option value="2">Inception</option>
+                <option value="3">The Dark Knight</option>
+                <option value="4">Interstellar</option>
+            </select>
+
+            <label for="event_datetime">Date & Time</label>
+            <input type="datetime-local" id="event_datetime" required>
+
+            <label for="capacity">Capacity</label>
+            <input type="number" id="capacity" min="1" placeholder="Enter capacity" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" placeholder="Event description" required></textarea>
+
+            <button type="submit" class="submit-btn">Create Event</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Logic to Handle Submission -->
+    <script>
+        document.getElementById('create-event-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Gather data from the form
+            const formData = {
+                title: document.getElementById('title').value,
+                // If value is empty string, send null to DB
+                movie_id: document.getElementById('movie_id').value || null, 
+                event_datetime: document.getElementById('event_datetime').value,
+                capacity: document.getElementById('capacity').value,
+                description: document.getElementById('description').value
+            };
+
+            try {
+                // Send to backend
+                const res = await fetch('/social/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await res.json();
+
+                if (res.status === 401) {
+                    alert("Please login first to create an event.");
+                    window.location.href = 'login.html';
+                } else if (res.ok) {
+                    alert("Event Created Successfully!");
+                    // Redirect back to the main events list
+                    window.location.href = 'events.html';
+                } else {
+                    alert("Error: " + (data.error || "Could not create event"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to connect to server.");
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - Cine Nest</title>
+    <link rel="stylesheet" href="movie_detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+                <span class="site-name">Cine Nest</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+    </header>
+
+
+    <div class="back-button">
+            <a href="movie.html"><i class="fa-solid fa-arrow-left"></i> Back to Movies</a>
+        </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        
+
+        <div class="movie-header">
+    <img id="movie-poster" src="photos/no-poster.jpg" alt="Movie Poster">
+
+    <div class="movie-info">
+        <h1 id="movie-title">Loading...</h1>
+
+        <div class="meta-box">
+            <h3>Release Year:</h3>
+            <p id="movie-year">----</p>
+
+            <h3>Genre:</h3>
+            <p id="movie-genre">Genre</p>
+
+            <h3>Rating:</h3>
+            <p>
+                <i class="fa-solid fa-star" style="color:#561c24;"></i>
+                <span id="movie-rating">0.0</span>/10
+            </p>
+        </div>
+
+        <h3 class="synopsis-heading">Synopsis</h3>
+        <p class="synopsis" id="movie-synopsis">Loading details...</p>
+
+        <div class="actions">
+            <button class="btn-watchlist" onclick="addToWatchlist()">
+                <i class="fa-solid fa-bookmark"></i> Add to Watchlist
+            </button>
+
+            <button class="btn-discuss" onclick="goToDiscussion()">
+                <i class="fa-solid fa-comments"></i> Discussion Board
+            </button>
+        </div>
+    </div>
+</div>
+
+
+        <!-- ADD REVIEW SECTION (Sends to social.js) -->
+        <section class="review-section">
+            <h3>Write a Review</h3>
+            <form id="review-form">
+                <div class="rating-input">
+                    <label>Your Rating:</label>
+                    <select id="rating" required>
+                        <option value="10">10 - Masterpiece</option>
+                        <option value="9">9 - Amazing</option>
+                        <option value="8">8 - Great</option>
+                        <option value="7">7 - Good</option>
+                        <option value="6">6 - Fine</option>
+                        <option value="5">5 - Average</option>
+                        <option value="4">4 - Bad</option>
+                        <option value="3">3 - Terrible</option>
+                        <option value="2">2 - Painful</option>
+                        <option value="1">1 - Unwatchable</option>
+                    </select>
+                </div>
+                <textarea id="comment" rows="4" placeholder="What did you think of this movie?" required></textarea>
+                <button type="submit" class="btn-submit">Post Review</button>
+            </form>
+        </section>
+
+        <hr>
+
+        <!-- EXISTING REVIEWS (Fetches from movies.js) -->
+        <section class="community-reviews">
+            <h3>Community Reviews</h3>
+            <div id="reviews-list">
+                <p>Loading reviews...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if(!movieId) {
+                alert("No movie selected");
+                window.location.href = "movie.html";
+                return;
+            }
+            fetchMovieDetails();
+            fetchMovieReviews();
+        });
+
+        // 1. Get Movie Info (From movies.js)
+        function fetchMovieDetails() {
+            fetch(`/api/movies/${movieId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.error) return;
+                    document.getElementById('movie-title').textContent = data.title;
+                    document.getElementById('movie-year').textContent = data.release_year;
+                    document.getElementById('movie-genre').textContent = data.genres || 'Unknown';
+                    document.getElementById('movie-rating').textContent = data.avg_rating || 'N/A';
+                    document.getElementById('movie-synopsis').textContent = data.synopsis;
+                    if(data.poster) document.getElementById('movie-poster').src = data.poster;
+                });
+        }
+
+        // 2. Get Reviews (From movies.js)
+        function fetchMovieReviews() {
+            fetch(`/api/movies/${movieId}/reviews`)
+                .then(res => res.json())
+                .then(reviews => {
+                    const list = document.getElementById('reviews-list');
+                    list.innerHTML = '';
+                    if(reviews.length === 0) {
+                        list.innerHTML = '<p style="color:#666;">No reviews yet. Be the first!</p>';
+                        return;
+                    }
+                    reviews.forEach(r => {
+                        const date = new Date(r.review_datetime).toLocaleDateString();
+                        list.innerHTML += `
+                            <div class="review-item">
+                                <div class="review-top">
+                                    <strong>${r.username}</strong>
+                                    <span class="stars"><i class="fa-solid fa-star"></i> ${r.rating}/10</span>
+                                </div>
+                                <p>${r.review_text}</p>
+                                <small>${date}</small>
+                            </div>
+                        `;
+                    });
+                });
+        }
+
+        // 3. Post Review (Sends to social.js)
+        document.getElementById('review-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
+
+            fetch('/social/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ movie_id: movieId, rating, comment })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    alert(data.error); // Likely "Not logged in"
+                    if(data.error === "Not logged in") window.location.href = 'login.html';
+                } else {
+                    alert("Review posted!");
+                    fetchMovieReviews(); // Refresh the list immediately
+                    // Also refresh details to show new average rating
+                    fetchMovieDetails();
+                    document.getElementById('comment').value = ''; 
+                }
+            })
+            .catch(err => console.error(err));
+        });
+
+        // Navigation Helpers
+        function goToDiscussion() {
+            window.location.href = `movie-discussion.html?id=${movieId}`;
+        }
+
+        function addToWatchlist() {
+            // Sends to social.js
+            fetch('/social/watchlist/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ movie_id: movieId, status: 'To-Watch' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) window.location.href = 'login.html';
+                else alert(data.message || "Added to Watchlist");
+            });
+        }
+    </script>
+</body>
+</html>

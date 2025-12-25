@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - Cine Nest</title>
+    <link rel="stylesheet" href="event_detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Event Details Section -->
+    <section class="event-details">
+        <div class="back-button">
+            <a href="events.html"><i class="fa-solid fa-arrow-left"></i> Back to Events</a>
+        </div>
+        
+        <h2 id="event-title">Loading Event...</h2>
+
+        <div class="details-box">
+            <p><strong>Movie:</strong> <span id="movie-name">...</span></p>
+            <p><strong>Host:</strong> <span id="host-name">...</span></p>
+            <p><strong>Date & Time:</strong> <span id="event-date">...</span></p>
+            <p><strong>Capacity:</strong> <span id="capacity-count">0 / 0</span></p>
+            <p><strong>Description:</strong> <span id="event-desc">...</span></p>
+        </div>
+
+        <h3>Participants</h3>
+        <ul class="participants-list" id="participants-list">
+            <li>Loading...</li>
+        </ul>
+
+        <button class="btn join-btn" id="join-btn">Join Event</button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+
+            if (!eventId) {
+                document.querySelector('.event-details').innerHTML = '<p style="text-align:center; padding:20px;">No event selected.</p>';
+                return;
+            }
+
+            // 1. Fetch Event Info
+            fetch(`/social/events/${eventId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    document.getElementById('event-title').textContent = data.title;
+                    document.getElementById('movie-name').textContent = data.movie_title || "General Event";
+                    document.getElementById('host-name').textContent = data.host_name;
+                    document.getElementById('event-date').textContent = new Date(data.event_datetime).toLocaleString();
+                    document.getElementById('event-desc').textContent = data.description;
+                    
+                    // Capacity logic
+                    const current = data.participant_count || 0;
+                    document.getElementById('capacity-count').textContent = `${current} / ${data.capacity}`;
+                })
+                .catch(console.error);
+
+            // 2. Fetch Participants
+            fetch(`/social/events/${eventId}/participants`)
+                .then(res => res.json())
+                .then(users => {
+                    const list = document.getElementById('participants-list');
+                    list.innerHTML = '';
+                    if (users.length === 0) {
+                        list.innerHTML = '<li>No participants yet. Be the first!</li>';
+                    } else {
+                        users.forEach(u => {
+                            const li = document.createElement('li');
+                            li.textContent = `${u.first_name} ${u.last_name}`;
+                            list.appendChild(li);
+                        });
+                    }
+                });
+
+            // 3. Join Button Logic
+            document.getElementById('join-btn').addEventListener('click', () => {
+                fetch('/social/events/join', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event_id: eventId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.message) {
+                        alert(data.message);
+                        location.reload(); // Refresh to update participant count
+                    } else {
+                        alert("Error joining event.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

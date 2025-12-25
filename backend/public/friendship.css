@@ -1,0 +1,76 @@
+/* Profile Header */
+.profile-header h2 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+}
+
+/* Adjust friend cards */
+.friend-request-card img,
+.friend-card img {
+    width: 50px;
+    /* smaller icon */
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Friend request info text */
+.friend-request-info {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Cards layout */
+.friend-request-card,
+.friend-card {
+    display: flex;
+    align-items: center;
+    background: #fafafa;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Friends grid layout */
+.friends-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.friend-card {
+    flex-direction: column;
+    width: 100px;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Friend names */
+.friend-card span {
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* Buttons */
+.friend-request-actions a {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    margin-left: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn.accept {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn.decline {
+    background-color: #f44336;
+    color: white;
+}

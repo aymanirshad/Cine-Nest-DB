@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CineNest Admin – Reports</title>
+  <link rel="stylesheet" href="/home.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+      /* Ensure layout matches other pages */
+      .admin-container { width: 90%; margin: 30px auto; color: var(--primary); font-family: Arial, sans-serif; }
+      .back-button { margin-bottom: 20px; }
+      .back-button a { text-decoration: none; color: #333; font-weight: bold; }
+      
+      .report-panel { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; }
+      .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+      
+      .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+      .report-table th, .report-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+      .report-table th { background-color: #f8f9fa; color: #333; }
+      
+      .export-btn { padding: 6px 12px; margin-left: 5px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; transition: 0.2s; }
+      .export-btn:hover { background: #eee; }
+  </style>
+</head>
+
+<body>
+
+  <header>
+        <div class="container">
+            <div class="logo">
+                <img src="/photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search movies..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            
+
+        </div>
+    </header>
+
+  <main class="admin-container">
+    <div class="back-button">
+        <a href="/admin/dashboard"><i class="fa-solid fa-arrow-left"></i> Back to dashboard</a>
+    </div>
+    
+    <div class="page-header">
+      <h1>Reports & Analytics</h1>
+      <p class="small-muted">System insights: user activity, movie performance, and community trends</p>
+    </div>
+
+    <section class="report-panel">
+      <div class="report-header">
+        <h2>Top 10 Most-Watched Movies</h2>
+        <div class="export-group">
+          <button class="export-btn" onclick="handleExport('mostWatchedTable', 'most_watched.csv', 'Most Watched')">CSV</button>
+          <button class="export-btn" onclick="handlePrint('Most Watched')">Print/PDF</button>
+        </div>
+      </div>
+
+      <table class="report-table" id="mostWatchedTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Movie</th>
+            <th>Genre</th>
+            <th>View Count</th>
+          </tr>
+        </thead>
+        <tbody id="mostWatchedBody">
+           <tr><td colspan="4">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="report-panel">
+      <div class="report-header">
+        <h2>Highest-Rated Movies</h2>
+        <div class="export-group">
+          <button class="export-btn" onclick="handleExport('topRatedTable', 'top_rated.csv', 'Highest Rated')">CSV</button>
+          <button class="export-btn" onclick="handlePrint('Highest Rated')">Print/PDF</button>
+        </div>
+      </div>
+
+      <table class="report-table" id="topRatedTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Movie</th>
+            <th>Avg. Rating</th>
+            <th>Total Reviews</th>
+          </tr>
+        </thead>
+        <tbody id="topRatedBody">
+           <tr><td colspan="4">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="report-panel">
+      <div class="report-header">
+        <h2>Most Active Users</h2>
+        <div class="export-group">
+          <button class="export-btn" onclick="handleExport('activeUsersTable', 'active_users.csv', 'Active Users')">CSV</button>
+          <button class="export-btn" onclick="handlePrint('Active Users')">Print/PDF</button>
+        </div>
+      </div>
+
+      <table class="report-table" id="activeUsersTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Posts</th>
+            <th>Comments</th>
+            <th>Reviews</th>
+            <th>Total Activity</th>
+          </tr>
+        </thead>
+        <tbody id="activeUsersBody">
+           <tr><td colspan="6">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Movie Community. Admin Reports | Cine Nest</p>
+  </footer>
+
+  <script>
+    const API_BASE = "http://localhost:3000";
+
+    // 1. Fetch Helper
+    async function apiCall(endpoint, method = "GET", body = null) {
+        const options = { 
+            method, 
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include' 
+        };
+        if (body) options.body = JSON.stringify(body);
+        try {
+            const res = await fetch(API_BASE + endpoint, options);
+            if (!res.ok) throw new Error("API Error");
+            return await res.json();
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadMostWatched();
+        loadTopRated();
+        loadActiveUsers();
+    });
+
+    // 2. Load Data Functions
+    async function loadMostWatched() {
+        const data = await apiCall("/admin/reports/most-watched");
+        const tbody = document.getElementById("mostWatchedBody");
+        tbody.innerHTML = "";
+        if (!data || data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='4'>No data available.</td></tr>";
+            return;
+        }
+        data.forEach((item, index) => {
+            tbody.innerHTML += `<tr>
+                <td>${index + 1}</td>
+                <td>${item.title}</td>
+                <td>${item.genre || 'N/A'}</td>
+                <td>${item.count}</td>
+            </tr>`;
+        });
+    }
+
+    async function loadTopRated() {
+        const data = await apiCall("/admin/reports/top-rated");
+        const tbody = document.getElementById("topRatedBody");
+        tbody.innerHTML = "";
+        if (!data || data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='4'>No data available.</td></tr>";
+            return;
+        }
+        data.forEach((item, index) => {
+            tbody.innerHTML += `<tr>
+                <td>${index + 1}</td>
+                <td>${item.title}</td>
+                <td><i class="fa-solid fa-star" style="color:gold"></i> ${item.avg_rating}</td>
+                <td>${item.total_reviews}</td>
+            </tr>`;
+        });
+    }
+
+    async function loadActiveUsers() {
+        const data = await apiCall("/admin/reports/active-users");
+        const tbody = document.getElementById("activeUsersBody");
+        tbody.innerHTML = "";
+        if (!data || data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='6'>No data available.</td></tr>";
+            return;
+        }
+        data.forEach((item, index) => {
+            tbody.innerHTML += `<tr>
+                <td>${index + 1}</td>
+                <td>${item.username}</td>
+                <td>${item.posts}</td>
+                <td>${item.comments}</td>
+                <td>${item.reviews}</td>
+                <td><strong>${item.total_activity}</strong></td>
+            </tr>`;
+        });
+    }
+
+    // 3. EXPORT & LOG LOGIC
+    // This downloads the CSV AND tells the database you did it.
+    async function handleExport(tableId, filename, reportType) {
+        // A. Generate CSV
+        exportTableToCSV(tableId, filename);
+
+        // B. Log to Database
+        console.log(`Logging export for ${reportType}...`);
+        await apiCall("/admin/reports/export", "POST", {
+            report_type: reportType,
+            format: "CSV"
+        });
+    }
+
+    // This handles Print AND logs to database
+    async function handlePrint(reportType) {
+        // A. Log to Database First
+        await apiCall("/admin/reports/export", "POST", {
+            report_type: reportType,
+            format: "PDF/Print"
+        });
+
+        // B. Open Print Dialog
+        window.print();
+    }
+
+    // 4. CSV Helper
+    function exportTableToCSV(tableId, filename) {
+        const table = document.getElementById(tableId);
+        let csv = [];
+        const rows = table.querySelectorAll("tr");
+        for (let i = 0; i < rows.length; i++) {
+            const row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) row.push(cols[j].innerText);
+            csv.push(row.join(","));
+        }
+        downloadCSV(csv.join("\n"), filename);
+    }
+
+    function downloadCSV(csv, filename) {
+        const csvFile = new Blob([csv], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = window.URL.createObjectURL(csvFile);
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>

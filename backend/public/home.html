@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Community - Home</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Internal CSS for Slider Animation -->
+    <style>
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 400px; 
+        }
+        .slides-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+            width: 100%;
+        }
+        .slide {
+            /* FIXED: These 3 lines ensure the slide is exactly 100% width and doesn't shrink */
+            min-width: 100%;
+            width: 100%;
+            flex-shrink: 0; 
+            position: relative;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7); 
+        }
+        .slide-info {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            color: white;
+            /* Added max-width to keep text compact */
+            max-width: 600px; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        .slide-info h2 { 
+            font-size: 3rem; 
+            margin-bottom: 10px; 
+        }
+        .slide-desc { 
+            /* FIXED: Smaller font size and background padding */
+            font-size: 1rem; 
+            background: rgba(0,0,0,0.6); 
+            padding: 15px; 
+            border-radius: 8px; 
+            line-height: 1.5;
+        }
+        
+        .slide-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.5rem;
+            border-radius: 50%;
+        }
+        .slide-btn:hover { background: rgba(86, 28, 36, 0.8); }
+        .slide-btn.left { left: 20px; }
+        .slide-btn.right { right: 20px; }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav class="nav-area">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search movies..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="login.html" class="btn login-btn">Login</a>
+                <a href="signup.html" class="btn signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SLIDER SECTION -->
+    <section class="slider">
+        <button class="slide-btn left" onclick="moveSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        
+        <div class="slides-container" id="slides-container">
+             <!-- Javascript will put images here -->
+             <p style="color: white; padding: 50px; text-align:center;">Loading Slides...</p>
+        </div>
+
+        <button class="slide-btn right" onclick="moveSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </section>
+
+    <!-- Trending Movies Section -->
+    <section class="movies-section" id="trending">
+        <h2>Trending Movies <span class="arrow" onclick="location.href='trending.html'">➜</span></h2>
+        <!-- Grid Container for JS -->
+        <div class="movies-grid" id="trending-grid">
+            <p style="color:white; padding:20px;">Loading Trending Movies...</p>
+        </div>
+    </section>
+
+    <!-- Top Rated Movies Section -->
+    <section class="movies-section" id="toprated">
+        <h2>Top Rated Movies <span class="arrow" onclick="location.href='toprated.html'">➜</span></h2>
+        <!-- Grid Container for JS -->
+        <div class="movies-grid" id="top-rated-grid">
+            <p style="color:white; padding:20px;">Loading Top Rated Movies...</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Movie Community. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. SLIDER LOGIC ---
+        let currentSlide = 0;
+        
+        // Fetch Slider Data
+        fetch('/api/movies/slider')
+            .then(res => res.json())
+            .then(movies => {
+                const container = document.getElementById('slides-container');
+                container.innerHTML = ''; // Clear loading text
+
+                movies.forEach(movie => {
+                    const slideHTML = `
+                        <div class="slide">
+                            <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='photos/default.jpg'">
+                            <div class="slide-info">
+                                <h2>${movie.title}</h2>
+                                <div class="slide-desc">${movie.synopsis}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += slideHTML;
+                });
+            });
+
+        // Button Logic (Left/Right)
+        function moveSlide(direction) {
+            const container = document.getElementById('slides-container');
+            const totalSlides = container.children.length;
+            
+            if (totalSlides === 0) return;
+
+            currentSlide += direction;
+            
+            // Loop functionality
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            
+            // Move the container
+            container.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        // --- 2. MOVIE CARD GENERATOR ---
+        function createMovieCard(movie) {
+            // Data from DB or defaults
+            const rating = movie.avg_rating || 'N/A';
+            const views = movie.view_count || 0;
+            
+            return `
+                <div class="movie-card" onclick="location.href='movie_detail.html?id=${movie.movie_id}'">
+                    <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='photos/default.jpg'">
+                    <h3>${movie.title}</h3>
+                    <div class="movie-info">
+                        <!-- Rating Star -->
+                        <span><i class="fa-solid fa-star"></i> ${rating}</span>
+                        <!-- View Eye -->
+                        <span><i class="fa-solid fa-eye"></i> ${views}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 3. FETCH TRENDING (Limit 6) ---
+        fetch('/api/movies/trending')
+            .then(res => res.json())
+            .then(movies => {
+                const container = document.getElementById('trending-grid');
+                container.innerHTML = '';
+                if(movies.length === 0) {
+                    container.innerHTML = '<p style="color:white;">No trending movies found.</p>';
+                    return;
+                }
+                movies.forEach(m => container.innerHTML += createMovieCard(m));
+            });
+
+        // --- 4. FETCH TOP RATED (Limit 6) ---
+        fetch('/api/movies/top-rated')
+            .then(res => res.json())
+            .then(movies => {
+                const container = document.getElementById('top-rated-grid');
+                container.innerHTML = '';
+                if(movies.length === 0) {
+                    container.innerHTML = '<p style="color:white;">No top rated movies found.</p>';
+                    return;
+                }
+                movies.forEach(m => container.innerHTML += createMovieCard(m));
+            });
+            
+        // --- 5. AUTH CHECK ---
+        fetch('/api/auth-status')
+            .then(res => res.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    document.getElementById('auth-buttons').innerHTML = `
+                        <span style="color:white; margin-right:10px;">Hi, ${data.user.username}</span>
+                        <a href="/logout" class="btn login-btn" style="background-color: #c7b7a3;">Logout</a>
+                    `;
+                }
+            });
+
+
+        // --- 6. SEARCH BAR LOGIC (Add this at the bottom) ---
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-input');
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                // Redirects to movie.html with the search query
+                window.location.href = `movie.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        if (searchBtn && searchInput) {
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+    </script>
+</body>
+</html>

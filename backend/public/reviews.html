@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Cine Nest</title>
+    <link rel="stylesheet" href="reviews.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Cine Nest Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="section-block">
+        <div class="section-title">
+            <h3>My Reviews</h3>
+        </div>
+        <div class="back-button">
+            <a href="profile.html"><i class="fa-solid fa-arrow-left"></i> Back to Profile</a>
+        </div>
+        
+        <!-- Reviews Grid -->
+        <div class="reviews-grid" id="reviews-container">
+            <p style="text-align:center; width:100%;">Loading reviews...</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchReviews();
+        });
+
+        function fetchReviews() {
+            fetch('/social/reviews')
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = 'login.html';
+                        return null;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    
+                    const container = document.getElementById('reviews-container');
+                    container.innerHTML = '';
+
+                    if (data.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; width:100%;">You haven\'t written any reviews yet.</p>';
+                        return;
+                    }
+
+                    data.forEach(review => {
+                        const card = document.createElement('div');
+                        card.className = 'review-card';
+                        card.innerHTML = `
+                            <img src="${review.poster || 'photos/default.jpg'}" alt="${review.title}" onerror="this.src='photos/default.jpg'">
+                            <h4>${review.title}</h4>
+                            <div class="rating">Rating: ${review.rating}/10</div>
+                            <p class="review-text">${review.comment}</p>
+                            <div class="review-actions">
+                                <button class="delete-btn" onclick="deleteReview(${review.review_id})">Delete</button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => console.error("Error loading reviews:", err));
+        }
+
+        function deleteReview(id) {
+            if(!confirm("Are you sure you want to delete this review?")) return;
+
+            fetch(`/social/reviews/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    fetchReviews(); // Refresh list
+                })
+                .catch(err => alert("Error deleting review"));
+        }
+    </script>
+
+</body>
+</html>

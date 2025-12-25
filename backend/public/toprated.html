@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine Nest - Top Rated</title>
+    <link rel="stylesheet" href="toprated.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                             <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+          
+
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="login.html" class="btn login-btn">Login</a>
+            </div>
+        </div>
+    </header>
+
+    
+<!-- Top Rated Section -->
+<section class="movies-section">
+    <div class="back-button">   
+        <a href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to home</a>  
+    </div>
+    <h1>Top Rated Movies</h1>
+
+    <!-- Rom-Com Grid -->
+    <h2 class="category-title">Romance & Comedy</h2>
+    <div class="movies-grid" id="romcom-grid">
+        <p style="color:white;">Loading...</p>
+    </div>
+
+    <!-- Comedy Grid -->
+    <h2 class="category-title">Comedy</h2>
+    <div class="movies-grid" id="comedy-grid">
+        <p style="color:white;">Loading...</p>
+    </div>
+
+    <!-- Horror Grid -->
+    <h2 class="category-title">Horror</h2>
+    <div class="movies-grid" id="horror-grid">
+        <p style="color:white;">Loading...</p>
+    </div>
+
+    <!-- Action Grid -->
+    <h2 class="category-title">Action</h2>
+    <div class="movies-grid" id="action-grid">
+        <p style="color:white;">Loading...</p>
+    </div>
+
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+    // Helper function to fetch specific categories
+    // We use the existing Browse API which supports filtering!
+    function loadCategory(containerId, genre, rating = 7) {
+        // Query DB for specific Genre with Rating >= 7
+        fetch(`/api/movies?genre=${genre}&rating=${rating}`)
+            .then(res => res.json())
+            .then(movies => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; // Clear loading
+
+                // Limit to 4 cards for a clean layout like your design
+                const limitedMovies = movies.slice(0, 7);
+
+                if (limitedMovies.length === 0) {
+                    container.innerHTML = '<p style="color:gray;">No movies found in this category.</p>';
+                    return;
+                }
+
+                limitedMovies.forEach(movie => {
+                    const poster = movie.poster ? movie.poster : 'photos/default.jpg';
+                    const html = `
+                        <div class="movie-card" onclick="location.href='movie_detail.html?id=${movie.movie_id}'" style="cursor:pointer;">
+                            <img src="${poster}" alt="${movie.title}" onerror="this.src='photos/default.jpg'">
+                            <h3>${movie.title}</h3>
+                            <p><i class="fa-solid fa-star"></i> ${movie.avg_rating || 'N/A'}</p>
+                            <p>${genre} | ${movie.release_year}</p>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            });
+    }
+
+    // Load the sections
+    // Note: We map your titles to Database Genre names
+    loadCategory('romcom-grid', 'Romance');  
+    loadCategory('comedy-grid', 'Comedy');
+    loadCategory('horror-grid', 'Horror');
+    loadCategory('action-grid', 'Action'); // Using Action for Adventure
+
+    // Auth Check
+    fetch('/api/auth-status')
+        .then(res => res.json())
+        .then(data => {
+            if (data.loggedIn) {
+                document.getElementById('auth-buttons').innerHTML = `
+                    <span style="color:white; margin-right:10px;">Hi, ${data.user.username}</span>
+                    <a href="/logout" class="btn login-btn" style="background-color: #d9534f;">Logout</a>
+                `;
+            }
+        });
+</script>
+
+</body>
+</html>

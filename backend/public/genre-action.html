@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Movies - Cine Nest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="genre.css">
+</head>
+
+<body>
+
+    <!-- Header / Navbar (Kept Exact) -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search movies..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN SECTION -->
+    <section class="movies-section">
+        <h2>
+            Action Movies
+            <span class="arrow"></span>
+        </h2>
+
+        <!-- Go Back Button -->
+         <div class="back-button">
+            <a href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+
+        <!-- Filter Bar (Optional frontend filtering) -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterLocal('all', event)">All</button>
+            <button class="filter-btn" onclick="filterLocal('recent', event)">Recent</button>
+            <button class="filter-btn" onclick="filterLocal('classic', event)">Classics</button>
+        </div>
+
+        <!-- Movies Grid (Dynamic) -->
+        <div class="movies-grid" id="genre-container">
+            <!-- Loading Indicator -->
+            <p style="color:white; width:100%; text-align:center;">Loading Action Movies...</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <!-- DYNAMIC SCRIPT -->
+    <script>
+        // CONFIGURATION: CHANGE THIS FOR OTHER GENRE PAGES!
+        const PAGE_GENRE = 'Action'; 
+
+        // 1. Fetch Movies by Genre
+        function loadGenreMovies() {
+            // Calls our generic /api/movies route with ?genre=Action
+            fetch(`/api/movies?genre=${encodeURIComponent(PAGE_GENRE)}`)
+                .then(res => res.json())
+                .then(movies => {
+                    const container = document.getElementById('genre-container');
+                    container.innerHTML = ''; // Clear loading text
+
+                    if (movies.length === 0) {
+                        container.innerHTML = `<p style="color:white;">No ${PAGE_GENRE} movies found.</p>`;
+                        return;
+                    }
+
+                    movies.forEach(movie => {
+                        // Determine Category for the buttons (Classic vs Recent)
+                        const category = movie.release_year < 2010 ? 'classic' : 'recent';
+                        // Fallback image
+                        const poster = movie.poster ? movie.poster : 'photos/default.jpg';
+
+                        const html = `
+                            <div class="movie-card" data-category="${category}" onclick="location.href='movie_detail.html?id=${movie.movie_id}'">
+                                <img src="${poster}" alt="${movie.title}" onerror="this.src='photos/default.jpg'">
+                                <h3>${movie.title}</h3>
+                                <a href="movie_detail.html?id=${movie.movie_id}" class="discussion-btn">View Details</a>
+                            </div>
+                        `;
+                        container.innerHTML += html;
+                    });
+                })
+                .catch(err => console.error("Error:", err));
+        }
+
+        // 2. Local Filter Logic (Recent vs Classic buttons)
+        function filterLocal(category, event) {
+            // Update Active Button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/Hide Cards based on data-category
+            const cards = document.querySelectorAll('.movie-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = ''; // Or 'block' depending on your CSS
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 3. Search Logic (Redirects to Search Page)
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-input');
+        if (searchBtn && searchInput) {
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if(query) window.location.href = `movie.html?search=${encodeURIComponent(query)}`;
+            });
+        }
+
+        // Initial Load
+        loadGenreMovies();
+    </script>
+
+</body>
+</html>

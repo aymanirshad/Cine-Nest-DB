@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion - Cine Nest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* --- RESET & BASIC SETUP --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Colors */
+        :root {
+            --primary: #561c24;
+            --secondary: #c7b7a3;
+            --accent-dark: #6d2932;
+            --accent-light: #e8d8c4;
+            --white: #ffffff;
+        }
+
+        /* Body */
+        body {
+            background-color: var(--accent-light);
+            color: var(--primary);
+            padding-top: 80px; /* Space for fixed header */
+        }
+
+        /* --- HEADER STYLES --- */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 10px 0;
+            position: fixed; /* Fixed to top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Renamed to 'header-container' to avoid conflict with main .container */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        /* Navbar */
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-light);
+        }
+
+        /* Search box */
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 6px 12px;
+            border: none;
+            outline: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .search-box button {
+            background-color: var(--accent-light);
+            color: var(--primary);
+            border: none;
+            border-radius: 0 5px 5px 0;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: var(--accent-dark);
+            color: var(--white);
+        }
+
+        /* --- MAIN DISCUSSION CONTAINER --- */
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 25px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #d6c7b2;
+            color: #402a23;
+            padding: 8px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #b8a991; }
+
+        h2 { margin-bottom: 15px; font-size: 28px; }
+        h2 span { color: #6d2932; }
+
+        /* Form Styles */
+        .new-post { margin-bottom: 20px; }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fafafa;
+            border: 1px solid #d6ccc2;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        textarea:focus { outline: none; border: 1px solid #6d2932; }
+
+        .btn-post {
+            background: #6d2932;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-post:hover { background: #8c382c; }
+
+        /* Post Card Styles */
+        .post-box {
+            background: #fff5ea;
+            padding: 18px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: 1px solid #e3d5ca;
+        }
+
+        .post-header {
+            font-size: 14px;
+            color: #6d5c54;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .action-btns button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .like-btn { background: #6d2932; }
+        .delete-btn { background: #561c24; }
+
+        /* Comment Styles */
+        .comment-section { margin-top: 15px; border-top: 1px solid #e3d5ca; padding-top: 10px; }
+        .comment-box {
+            background: #f7ede2;
+            padding: 8px 12px;
+            border-left: 4px solid #b14a3b;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { width: 95%; }
+            nav ul { display: none; } /* Simplified mobile view */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <!-- Changed class from 'container' to 'header-container' -->
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"> 
+                <!-- Fallback if image missing -->
+                <span class="site-name">Cine Nest</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Back Button -->
+        <a href="movie.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Movies</a>
+
+        <h2>Discussion: <span>Inception</span></h2>
+
+        <!-- New Post Form -->
+        <div class="new-post">
+            <textarea id="postInput" rows="3" placeholder="Share your thoughts..."></textarea>
+            <button class="btn-post" onclick="addPost()">Post</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+
+        <!-- Posts List -->
+        <div id="postsList">
+            <!-- Example Post 1 -->
+            <div class="post-box">
+                <div class="post-header">
+                    <b>MovieFan123</b>
+                    <span>Just now</span>
+                </div>
+                <p>This movie blew my mind! The ending is still a mystery to me.</p>
+                
+                <div class="action-btns" style="margin-top: 10px;">
+                    <button class="like-btn" onclick="alert('Liked!')"><i class="fa-solid fa-thumbs-up"></i> Like</button>
+                    <button class="delete-btn" onclick="this.parentElement.parentElement.remove()">Delete</button>
+                </div>
+
+                <div class="comment-section">
+                    <h4>Comments:</h4>
+                    <div class="comment-box"><b>User A:</b> Totally agree!</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Simple JavaScript for Functionality -->
+    <script>
+        function addPost() {
+            var input = document.getElementById("postInput");
+            var text = input.value;
+
+            if (text === "") {
+                alert("Please write something first!");
+                return;
+            }
+
+            var newPost = document.createElement("div");
+            newPost.className = "post-box";
+
+            newPost.innerHTML = `
+                <div class="post-header">
+                    <b>You</b>
+                    <span>Just now</span>
+                </div>
+                <p>${text}</p>
+                <div class="action-btns" style="margin-top: 10px;">
+                    <button class="like-btn" onclick="alert('Liked!')"><i class="fa-solid fa-thumbs-up"></i> Like</button>
+                    <button class="delete-btn" onclick="this.parentElement.parentElement.remove()">Delete</button>
+                </div>
+                <div class="comment-section">
+                    <h4>Comments:</h4>
+                    <p style="color:#777; font-size:13px;">No comments yet.</p>
+                </div>
+            `;
+
+            var list = document.getElementById("postsList");
+            list.insertBefore(newPost, list.firstChild);
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>

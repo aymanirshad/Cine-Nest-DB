@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard - Cine Nest</title>
+
+  <!-- Link your existing site stylesheet (same as home page) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><!-- SAME STYLE AS HOME PAGE -->
+  <link rel="stylesheet" href="/home.css">
+
+
+  <style>
+    /* Admin dashboard specific */
+
+    
+/* Header */
+header {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+/* Adjust flex in header */
+header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    margin: auto;
+}
+/* Search box */
+.search-box {
+    display: flex;
+    align-items: center;
+    margin-left: 20px; /* spacing from nav */
+}
+
+.search-box input {
+    padding: 6px 12px;
+    border: none;
+    outline: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
+    width: 180px;
+}
+
+.search-box button {
+    background-color: var(--accent-light); /* same as signup button */
+    color: var(--primary);
+    border: none;
+    border-radius: 0 5px 5px 0;
+    padding: 6px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.search-box button:hover {
+    background-color: var(--accent-dark);
+    color: var(--white);
+}
+
+/* Optional: icon spacing */
+.search-box button i {
+    font-size: 16px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.site-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--white);
+}
+
+
+/* Navbar */
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    position: relative;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: var(--white);
+    text-decoration: none;
+    padding: 5px 0;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: var(--accent-light);
+}
+
+/* Dropdown */
+
+.nav-links li.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: #c7b7a3;
+    width: fit-content;          
+    white-space: nowrap;      
+    padding: 0;
+    border-radius: 5px;
+    z-index: 999;
+}
+.dropdown-content li {
+    padding: 8px 12px;
+    width: 100%;
+}
+.dropdown-content li a {
+    color: #561c24 !important;   
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+    display: block;              /* keep open */
+}
+
+
+/* Auth buttons */
+.auth-buttons a {
+    text-decoration: none;
+    padding: 6px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+/* Back Button */
+.back-button {
+    width: 95%;
+    margin: 15px auto;
+}
+
+.back-button a {
+    text-decoration: none;
+    color:#561c24;
+    background: #fdf6e3;
+    padding: 8px 12px;
+    border-radius: 25px;
+    display: inline-block;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.back-button a:hover {
+    background: #561c24;
+    color: white;
+}
+
+.admin-container {
+  width: 90%;
+  margin: 30px auto;
+  color: var(--primary);
+  font-family: Arial, sans-serif;
+}
+
+/* Overview cards row */
+.overview-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.admin-card {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: default;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.admin-card .label {
+  font-size: 13px;
+  color: var(--primary);
+}
+
+.admin-card .value {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.admin-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.action-card {
+  background: var(--white);
+  padding: 18px;
+  border-radius: 10px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.action-card h4 {
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.action-card p {
+  margin: 0;
+  color: #444;
+  font-size: 14px;
+}
+
+.action-card a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* Recent activity / flagged content table */
+.panel {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  margin-bottom: 28px;
+}
+
+.panel h3 {
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+table.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table.activity-table th,
+table.activity-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  color: #333;
+}
+
+table.activity-table th {
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+table.activity-table a {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+table.activity-table a:hover {
+  color: var(--accent-dark);
+}
+
+.small-muted {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .admin-container { margin: 16px auto; }
+  .admin-card .value { font-size: 20px; }
+}
+
+/* manage user popup */
+/* POPUP OVERLAY */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* When URL hash matches this ID → popup appears */
+.popup-overlay:target {
+  display: flex;
+}
+
+/* POPUP BOX */
+.popup-box {
+  background: var(--white);
+  padding: 25px;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 14px;
+  position: relative;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  text-decoration: none;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+
+.user-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  z-index: 9000;
+}
+
+.user-popup-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  width: 460px;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+  display: none;
+  z-index: 9001;
+}
+ 
+/* Popup animation */
+@keyframes popupFade {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Header */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--accent-light);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.popup-header h2 {
+  color: var(--primary);
+  margin: 0;
+}
+
+.user-popup-box .close-btn {
+  background: var(--accent-dark);
+  color: var(--white);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Search Section */
+.search-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.search-area input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--secondary);
+}
+
+.search-btn {
+  padding: 8px 14px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* User Cards */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-card {
+  background: var(--accent-light);
+  padding: 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.06);
+}
+
+.user-card h4 {
+  margin: 0;
+  color: var(--primary);
+}
+
+.ban-btn,
+.unban-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ban-btn {
+  background: #b22222;
+  color: white;
+}
+
+.unban-btn {
+  background: #1b8a3a;
+  color: white;
+}
+ 
+
+.mod-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0,0,0,0.72) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important; /* very high to beat any other stacking contexts */
+  -webkit-overflow-scrolling: touch !important;
+  display: none !important;
+}
+
+/* show when hash is the element */
+.mod-overlay:target {
+  display: flex !important;
+  animation: fadeIn .14s ease both;
+}
+
+/* popup box inside overlay */
+.mod-overlay .mod-box {
+  width: 640px;
+  max-width: 94%;
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  background: var(--white) !important;
+  position: relative;
+  z-index: 100000 !important;
+}
+
+/* ensure close is visible and clickable */
+.mod-overlay .close-btn {
+  position: absolute !important;
+  top: 10px !important;
+  right: 14px !important;
+  font-size: 22px !important;
+  color: var(--primary) !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  z-index: 100001 !important;
+}
+
+
+
+/* safety: remove any interfering filters/backdrops for popup children */
+.mod-overlay,
+.mod-overlay * {
+  backdrop-filter: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+
+  </style>
+</head>
+<body>
+
+ <!-- Header / Navbar -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="/photos/logo.jpg" alt="Movie Community Logo">
+                <span class="site-name">Cine Nest</span>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Movies</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie.html">Browse Movies</a></li>
+                            <li><a href="trending.html">Trending</a></li>
+                            <li><a href="toprated.html">Top Rated</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a href="#">Genres</a>
+                        <ul class="dropdown-content">
+                            <li><a href="genre-action.html">Action</a></li>
+                            <li><a href="genre-comedy.html">Comedy</a></li>
+                            <li><a href="genre-horror.html">Horror</a></li>
+                            <li><a href="genre-sci-fi.html">Sci-Fi</a></li>
+                            <li><a href="genre-romance.html">Romance</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a href="#">Community</a>
+                        <ul class="dropdown-content">
+                            <li><a href="movie-discussion.html">Discussions</a></li>
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="friends.html">Friends</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search movies..." id="search-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            
+
+        </div>
+    </header>
+
+  <!-- Admin content -->
+  <main class="admin-container">
+    <div class="back-button">
+      <a href="/home.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <!-- Page title -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;">
+      <div>
+        <h1 style="color:var(--primary);font-size:22px;margin:0;">Admin Dashboard</h1>
+        <p class="small-muted" style="margin-top:6px;">Overview of system activity & quick links to moderation and reports</p>
+      </div>
+      <div class="small-muted" style="text-align:right;">
+        <div>Logged in as: <strong>admin@cinenest.local</strong></div>
+        <div style="margin-top:6px;">Date: <strong id="todayDate"></strong></div>
+      </div>
+    </div>
+
+    <!-- Overview cards -->
+    <section class="overview-row">
+  
+      <div class="admin-card">
+        <div class="label">Total Users</div>
+        <div id="totalUsersValue" class="value">...</div>
+        <div class="small-muted">New (24h): <span id="active30days">...</span></div>
+      </div>
+    
+      <div class="admin-card">
+        <div class="label">Total Movies</div>
+        <div id="totalMoviesValue" class="value">...</div>
+        <div class="small-muted">Genres: <span id="totalGenres">...</span></div>
+      </div>
+    
+      <div class="admin-card">
+        <div class="label">Total Reviews</div>
+        <div id="totalReviewsValue" class="value">...</div>
+        <div class="small-muted">Avg. rating: <span id="avgRating">...</span> / 10</div>
+      </div>
+    
+      <div class="admin-card">
+        <div class="label">Pending Flags</div>
+        <div id="pendingFlagsValue" class="value">...</div>
+        <div class="small-muted">Items flagged for moderation</div>
+      </div>
+    
+    </section>
+
+
+      <section class="admin-actions">
+
+        <div class="action-card">
+          <div>
+            <h4>Manage Users</h4>
+            <p>Search, ban, unban, or delete user accounts.</p>
+          </div>
+          <a href="#manageUsers" class="open-btn">Open</a>
+        </div>
+
+      <div class="action-card">
+        <div>
+          <h4>Manage Movies & Genres</h4>
+          <p>Add new movies, update metadata, or remove outdated entries. Manage genres and posters.</p>
+        </div>
+        <a href="/admin/manage_movies"> Open</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h4>Moderation / Restricted Words</h4>
+          <p>Review flagged posts/comments, add or remove restricted words, and resolve flags.</p>
+        </div>
+        <a href="#moderation" class="open-btn">Open</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h4>Reports</h4>
+          <p>Generate reports: Top-rated movies, Most-watched, Most active users. Export CSV / PDF.</p>
+        </div>
+        <a href="/admin/reports">Open</a>
+      </div>
+
+    </section>
+
+    <!-- Recent flagged content panel -->
+    <section class="panel">
+      <h3>Recent Flagged Items</h3>
+      <table class="activity-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Type</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="recentFlagsTableBody">
+           </tbody>
+      </table>
+    </section>
+
+    <!-- Recent system activity -->
+    <section class="panel">
+      <h3>Recent System Activity</h3>
+      
+      <div style="display:flex; gap:20px; flex-wrap:wrap;">
+          <div style="flex:1;min-width:200px;">
+            <p class="small-muted">New signups (24h)</p>
+            <h4 id="statSignups24h" style="margin:0;color:var(--primary)">...</h4>
+          </div>
+    
+          <div style="flex:1;min-width:200px;">
+            <p class="small-muted">Reviews posted (24h)</p>
+            <h4 id="statReviews24h" style="margin:0;color:var(--primary)">...</h4>
+          </div>
+          
+          <div style="flex:1;min-width:200px;">
+            <p class="small-muted">Events (24h)</p>
+            <h4 id="statEvents24h" style="margin:0;color:var(--primary)">...</h4>
+          </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (reuse same footer style) -->
+  <footer>
+    <p>&copy; 2025 Movie Community. Admin Tools | Cine Nest</p>
+  </footer>
+
+  <!-- Minimal script for date -->
+  <script>
+    document.getElementById('todayDate').innerText = new Date().toLocaleDateString();
+  </script>
+  
+  <!-- ===========================
+     MANAGE USERS POPUP MODULE
+=========================== -->
+<div id="manageUsers" class="popup-overlay">
+  <div class="popup-box">
+
+    <a href="#" class="close-btn">✕</a>
+    <h2>Manage Users</h2>
+
+    <div class="search-area">
+      <input id="popupUserSearchInput" type="text" placeholder="Search user...">
+      <button id="popupUserSearchBtn" class="search-btn">Search</button>
+    </div>
+
+    <div id="userListPopup" class="user-list">
+      <!-- JS populates users here -->
+    </div>
+
+   
+  
+  
+  
+    
+  </div>
+   
+
+  
+
+  
+    
+    
+    </div>
+    
+  </div>
+   
+
+  
+
+  
+    
+    
+    </div>
+    
+  </div>
+</div>
+
+<!-- <script>
+function openUserPopup() {
+  document.getElementById("userOverlay").style.display = "block";
+  document.getElementById("userBox").style.display = "block";
+} 
+function closeUserPopup() {
+  document.getElementById("userOverlay").style.display = "none";
+  document.getElementById("userBox").style.display = "none";
+}
+</script>  -->
+
+
+
+<!-- ===========================
+     GENERIC MODERATION POPUP (Place this at the VERY end of body)
+=========================== -->
+<div id="manageUsers" class="mod-overlay">
+  <div class="mod-box">
+     <a href="#" class="close-btn">✕</a>
+     <h2>Manage Users</h2>
+     
+     <div class="search-box">
+        <input type="text" id="popupUserSearchInput" placeholder="Search...">
+        <button id="popupUserSearchBtn">Search</button>
+     </div>
+
+     <div id="userListPopup" class="user-list-container"></div>
+  </div>
+</div>
+
+
+<div id="moderation" class="mod-overlay">
+  <div class="mod-box">
+
+    <a href="#" class="close-btn">✕</a>
+    <h2 class="popup-title">Moderation Panel</h2>
+
+    <!-- Restricted Words List -->
+    <h3 class="section-title">Restricted Words List</h3>
+<div id="restrictedWordsList" class="restricted-words-list">
+  <span class="word-tag" data-word-id="1">spoiler <button class="delete-word" data-word-id="1">×</button></span>
+  <span class="word-tag" data-word-id="2">hate <button class="delete-word" data-word-id="2">×</button></span>
+  <span class="word-tag" data-word-id="3">stupid <button class="delete-word" data-word-id="3">×</button></span>
+</div>
+
+    <!-- Add Restricted Word  -->
+    <div class="add-word">
+  <input id="restrictedInput" type="text" placeholder="Add new restricted word...">
+  <button id="addRestrictedBtn" class="search-btn">Add</button>
+</div>
+
+    <hr class="popup-divider">
+
+    <!-- Flagged Content List -->
+    <h3 class="section-title">Flagged Content</h3>
+    <div id="flaggedList" class="flagged-list">
+      <a href="#flag1" class="flag-card">
+      <div>
+        <h4>User: user_ahmed</h4>
+        <p class="small-muted">Type: Comment</p>
+        <p class="small-muted">"I can't believe they..."</p>
+      </div>
+      <p class="flag-reason">Reason: Offensive Language</p>
+    </a>
+
+    <a href="#flag2" class="flag-card">
+      <div>
+        <h4>User: maria_k</h4>
+        <p class="small-muted">Type: Post</p>
+        <p class="small-muted">"This spoiler ruined..."</p>
+      </div>
+      <p class="flag-reason">Reason: Spoiler</p>
+    </a>
+
+    <a href="#flag3" class="flag-card">
+      <div>
+        <h4>User: john_beta</h4>
+        <p class="small-muted">Type: Review</p>
+        <p class="small-muted">"Worst movie ever..."</p>
+      </div>
+      <p class="flag-reason">Reason: Hate Speech</p>
+    </a>
+
+    </div>
+    
+
+  </div>
+</div>
+
+<!-- FLAG DETAIL POPUPS -->
+<div id="dynamicFlagPopup" class="mod-overlay">
+  <div class="mod-box">
+    <a href="#moderation" class="close-btn" onclick="window.location.hash='moderation'">✕</a>
+    
+    <h2 class="popup-title">Review Flagged Content</h2>
+    
+    <div class="flag-detail-box">
+      <p><strong>Type:</strong> <span id="popupFlagType">...</span></p>
+      <p><strong>Reason:</strong> <span id="popupFlagReason">...</span></p>
+      <hr>
+      <p><strong>Content Preview:</strong></p>
+      <div class="detail-content-box" id="popupFlagContent">
+        Loading content...
+      </div>
+    </div>
+
+    <div class="flag-actions">
+      <button id="dynamicApproveBtn" class="approve-btn">Keep Content</button>
+      <button id="dynamicRemoveBtn" class="remove-btn">Remove Content</button>
+    </div>
+    
+    <a href="#moderation" class="back-btn" onclick="window.location.hash='moderation'">Back to List</a>
+  </div>
+</div>
+
+
+<script src="/adminDashboard.js"></script>
+
+</body>
+</html>
+

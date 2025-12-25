@@ -1,0 +1,260 @@
+/* Page Background Fix */
+body {
+    background: #f4e9d8;
+    font-family: Arial, sans-serif;
+    color: #2c2c2c;
+}
+
+
+/* Back Button */
+.back-button {
+    width: 95%;
+    margin: 20px auto 10px auto;
+}
+
+.back-button a {
+    text-decoration: none;
+    color: #3b2f2f;
+    background: #fff5e1;
+    padding: 10px 18px;
+    border-radius: 30px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: bold;
+    border: 1px solid #e0c9a9;
+    transition: 0.3s ease;
+}
+
+.back-button a:hover {
+    background: #5d1f1f;
+    color: white;
+}
+
+
+
+/* Friends Section */
+.friends-section {
+    padding: 25px 30px;
+}
+
+.friends-section h2 {
+    color: #4c2e05;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+
+
+/* Friends Grid */
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 22px;
+}
+
+
+
+/* Friend Card */
+.friend-card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transition: 0.25s ease;
+}
+
+.friend-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+.friend-card img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #f1e3cd;
+}
+
+.friend-card span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #3b2f2f;
+    margin-bottom: 8px;
+    display: block;
+}
+
+
+
+/* Message Button */
+.msg-btn {
+    background: #8b3a3a;
+    color: white;
+    border: none;
+    margin-top: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.msg-btn:hover {
+    background: #a24444;
+}
+
+
+
+/* Friend Requests Section */
+.request-card {
+    border: 1px solid #f1d7b5;
+}
+
+/* Accept / Decline Buttons */
+.request-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.request-actions button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Accept */
+.request-actions .accept {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.request-actions .accept:hover {
+    background-color: #33d67b;
+}
+
+/* Decline */
+.request-actions .decline {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.request-actions .decline:hover {
+    background-color: #ff5e4f;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Tablets ===== */
+@media screen and (max-width: 900px) {
+    header .container {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .friends-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 16px;
+    }
+
+    .friend-card img {
+        width: 75px;
+        height: 75px;
+    }
+
+    .friend-card {
+        padding: 12px;
+    }
+
+    .msg-btn,
+    .request-actions button {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .back-button a {
+        font-size: 0.9rem;
+        padding: 8px 14px;
+    }
+
+    .search-box {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ===== Phones ===== */
+@media screen and (max-width: 600px) {
+    header .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .friends-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+    }
+
+    .friend-card img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .friend-card {
+        padding: 10px;
+    }
+
+    .msg-btn,
+    .request-actions button {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+
+    .back-button a {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    .search-box {
+        order: 3;
+        width: 100%;
+    }
+
+    .search-box input {
+        flex: 1 1 auto;
+        font-size: 0.8rem;
+    }
+
+    .search-box button {
+        flex-shrink: 0;
+    }
+}

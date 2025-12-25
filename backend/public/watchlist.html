@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist - Cine Nest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL & HEADER --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        :root { --primary: #561c24; --secondary: #c7b7a3; --accent-dark: #6d2932; --accent-light: #e8d8c4; --white: #ffffff; }
+        body { background-color: var(--accent-light); color: var(--primary); padding-top: 80px; }
+        
+        header { background-color: var(--primary); color: var(--white); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .header-container { display: flex; align-items: center; justify-content: space-between; width: 90%; margin: auto; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 20px; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: white; text-decoration: none; font-size: 15px; }
+
+        /* --- WATCHLIST CSS --- */
+        .section-title { text-align: center; margin: 30px 0 20px 0; font-size: 2rem; border-bottom: 2px solid var(--accent-dark); display: block; width: fit-content; margin-left: auto; margin-right: auto; padding-bottom: 5px; }
+        
+        .tabs { text-align: center; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; border: none; background: var(--white); color: var(--primary); cursor: pointer; margin: 0 5px; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .tab.active { background: var(--accent-dark); color: var(--white); }
+
+        .watchlist-grid { width: 90%; margin: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; padding-bottom: 40px; }
+        
+        .watch-card { background-color: var(--white); border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .watch-card:hover { transform: scale(1.05); }
+        .watch-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .watch-card h3 { margin-bottom: 10px; font-size: 1.1rem; min-height: 40px; display: flex; align-items: center; justify-content: center;}
+        
+        select { margin-top: 10px; width: 100%; padding: 7px; border-radius: 5px; border: 1px solid var(--accent-dark); background-color: var(--accent-light); color: var(--primary); cursor: pointer; }
+
+        .back-button { width: 95%; margin: 15px auto; }
+        .back-button a { text-decoration: none; color: #561c24; background: #fdf6e3; padding: 8px 12px; border-radius: 25px; display: inline-block; font-weight: bold; transition: background 0.3s, color 0.3s; }
+        .back-button a:hover { background: #561c24; color: white; }
+
+        footer { text-align: center; padding: 20px 0; background-color: var(--primary); color: var(--white); margin-top: auto; }
+        
+        /* Message when empty */
+        .empty-msg { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: #666; margin-top: 20px; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo"><img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'"><span class="site-name">Cine Nest</span></div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html" class="active">Watchlist</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <h2 class="section-title">My Watchlist</h2>
+
+    <div class="tabs">
+        <button class="tab active" onclick="filterList('To-Watch')">To-Watch</button>
+        <button class="tab" onclick="filterList('Watching')">Watching</button>
+        <button class="tab" onclick="filterList('Completed')">Completed</button>
+    </div>
+
+    <div class="back-button">
+        <a href="profile.html"><i class="fa-solid fa-arrow-left"></i> Back to Profile</a>
+    </div>
+
+    <!-- Dynamic Grid -->
+    <div class="watchlist-grid" id="watchlist-container">
+        <!-- Movies load here -->
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let allMovies = [];
+        let currentTab = 'To-Watch';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        function fetchData() {
+            // 1. Fetch Real Watchlist from DB
+            // 2. Fetch Random Recommendations (to populate the list if empty)
+            Promise.all([
+                fetch('/social/watchlist').then(res => {
+                    if (res.status === 401) { window.location.href = 'login.html'; return []; }
+                    return res.json();
+                }),
+                fetch('/social/recommendations').then(res => res.json())
+            ])
+            .then(([watchlistData, recData]) => {
+                const watchlist = Array.isArray(watchlistData) ? watchlistData : [];
+                const recs = Array.isArray(recData) ? recData : [];
+
+                // Create a Set of existing movie IDs to avoid duplicates
+                const existingIds = new Set(watchlist.map(m => m.movie_id));
+
+                // Convert recommendations to "To-Watch" format
+                const newSuggestions = recs
+                    .filter(m => !existingIds.has(m.movie_id))
+                    .map(m => ({
+                        ...m,
+                        watch_status: 'To-Watch' // Default status for suggestions
+                    }));
+
+                // Combine: Watchlist first, then suggestions
+                allMovies = [...watchlist, ...newSuggestions];
+                
+                // Render
+                filterList(currentTab);
+            })
+            .catch(err => console.error("Error fetching data:", err));
+        }
+
+        function filterList(status) {
+            currentTab = status;
+            
+            // Update Tab Styling
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent === status);
+            });
+
+            // Filter Data
+            const filtered = allMovies.filter(m => m.watch_status === status);
+            const container = document.getElementById('watchlist-container');
+            container.innerHTML = '';
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-msg">No movies in "${status}" list.</div>`;
+                return;
+            }
+
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'watch-card';
+                div.innerHTML = `
+                    <img src="${m.poster || 'photos/default.jpg'}" alt="${m.title}" onerror="this.src='photos/default.jpg'">
+                    <h3>${m.title}</h3>
+                    <select onchange="updateStatus(this, ${m.movie_id})">
+                        <option value="To-Watch" ${status === 'To-Watch' ? 'selected' : ''}>To-Watch</option>
+                        <option value="Watching" ${status === 'Watching' ? 'selected' : ''}>Watching</option>
+                        <option value="Completed" ${status === 'Completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateStatus(selectElem, movieId) {
+            const newStatus = selectElem.value;
+
+            // 1. Optimistic UI Update: Update local array immediately
+            const movieIndex = allMovies.findIndex(m => m.movie_id === movieId);
+            if (movieIndex > -1) {
+                allMovies[movieIndex].watch_status = newStatus;
+            }
+
+            // 2. Refresh view to move the card to the correct tab immediately
+            filterList(currentTab);
+
+            // 3. Send update to server (INSERT or UPDATE)
+            fetch('/social/watchlist/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ movie_id: movieId, status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    console.warn("Backend update error:", data.error);
+                    alert("Failed to save status. Please try again.");
+                } else {
+                    console.log("Status saved!");
+                }
+            })
+            .catch(err => console.error("Failed to sync status", err));
+        }
+    </script>
+
+</body>
+</html>

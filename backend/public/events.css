@@ -1,0 +1,158 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Colors */
+:root {
+    --primary: #561c24;
+    --secondary: #c7b7a3;
+    --accent-dark: #6d2932;
+    --accent-light: #e8d8c4;
+    --white: #ffffff;
+}
+
+/* Body */
+body {
+    background-color: var(--accent-light);
+    color: var(--primary);
+    min-height: 100vh;
+    padding-top: 80px; /* Space for fixed header */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* RENAMED to match HTML fix */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+.site-name { font-size: 24px; font-weight: bold; color: var(--white); text-decoration: none; }
+
+nav ul { list-style: none; display: flex; gap: 20px; }
+nav ul li a { color: var(--white); text-decoration: none; font-size: 15px; transition: color 0.3s; }
+nav ul li a:hover, nav ul li a.active { color: var(--accent-light); }
+
+/* Search Box */
+.search-box { display: flex; align-items: center; }
+.search-box input { padding: 6px 12px; border: none; border-radius: 5px 0 0 5px; width: 180px; }
+.search-box button { background-color: var(--accent-light); border: none; border-radius: 0 5px 5px 0; padding: 6px 15px; cursor: pointer; }
+
+/* Main Content */
+.events-section {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+    flex: 1;
+}
+
+.events-section h1 {
+    margin-bottom: 25px;
+    color: var(--primary);
+    text-align: center;
+    border-bottom: 2px solid var(--accent-dark);
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* Back Button */
+.back-button { margin-bottom: 20px; }
+.back-button a {
+    text-decoration: none;
+    color: #561c24;
+    background: #fff5e1;
+    padding: 8px 15px;
+    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    border: 1px solid #e0c9a9;
+    transition: 0.3s;
+}
+.back-button a:hover { background: #561c24; color: white; }
+
+/* Event Cards */
+.event-card {
+    background: var(--white);
+    padding: 25px;
+    border-left: 6px solid var(--accent-dark);
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+.event-card:hover { transform: translateY(-3px); }
+
+.event-card h2 { color: var(--primary); margin-bottom: 10px; }
+.event-card p { margin-bottom: 8px; color: #444; }
+
+/* Buttons */
+.create-event-btn {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 30px auto;
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.create-event-btn:hover { background: var(--accent-dark); }
+
+.join-btn {
+    background: var(--accent-dark);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+}
+.join-btn:hover { background: var(--primary); }
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--primary);
+    color: var(--white);
+    margin-top: auto;
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+    .header-container { flex-wrap: wrap; gap: 10px; }
+    nav ul { flex-wrap: wrap; justify-content: center; gap: 10px; }
+}
+
+@media screen and (max-width: 600px) {
+    .header-container { flex-direction: column; align-items: flex-start; }
+    nav ul { flex-direction: column; gap: 5px; width: 100%; }
+    .search-box { width: 100%; margin-top: 10px; }
+    .search-box input { width: 100%; }
+}

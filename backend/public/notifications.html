@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Cine Nest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* --- GLOBAL & HEADER --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        :root { --primary: #561c24; --secondary: #c7b7a3; --accent-dark: #6d2932; --accent-light: #e8d8c4; --white: #ffffff; }
+        
+        body {
+            background-color: var(--accent-light);
+            color: var(--primary);
+            padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 10px 0;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin: auto;
+        }
+
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 20px; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: white; text-decoration: none; font-size: 15px; }
+
+        /* Main Content */
+        main { flex: 1; }
+
+        .profile-header {
+            width: 90%;
+            margin: 30px auto 10px auto;
+            text-align: center;
+        }
+
+        .profile-header h2 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent-dark);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .back-button { width: 95%; margin: 15px auto; }
+        .back-button a {
+            text-decoration: none;
+            color: #561c24;
+            background: #fdf6e3;
+            padding: 8px 12px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            transition: background 0.3s, color 0.3s;
+        }
+        .back-button a:hover { background: #561c24; color: white; }
+
+        .content { width: 90%; margin: 20px auto; max-width: 800px; }
+
+        .notification-card {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent-dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notification-card.read {
+            border-left: 4px solid #ccc; /* Different style for read notifications */
+            opacity: 0.8;
+        }
+
+        .notification-card p { margin: 0 0 5px 0; font-size: 16px; color: var(--primary); }
+        .notification-card small { display: block; color: #555; font-size: 12px; }
+
+        footer { text-align: center; padding: 20px 0; background-color: var(--primary); color: var(--white); }
+
+        /* Responsive */
+        @media screen and (max-width: 900px) {
+            .header-container, nav ul { flex-wrap: wrap; justify-content: center; gap: 10px; }
+        }
+        @media screen and (max-width: 600px) {
+            .header-container { flex-direction: column; align-items: flex-start; }
+            nav ul { flex-direction: column; gap: 5px; width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="photos/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+                <span class="site-name">Cine Nest</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="movie.html">Movies</a></li>
+                    <li><a href="watchlist.html">Watchlist</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="friends.html">Friends</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="profile-header">
+            <h2>Notifications</h2>
+        </section>
+
+        <div class="back-button">
+            <a href="profile.html"><i class="fa-solid fa-arrow-left"></i> Back to Profile</a>
+        </div>
+
+        <section class="content" id="notification-container">
+            <p style="text-align:center;">Loading...</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Cine Nest. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/social/notifications')
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = 'login.html';
+                        return null;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    
+                    const container = document.getElementById('notification-container');
+                    container.innerHTML = '';
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(n => {
+                            // n.read_status might be 1/0 or true/false
+                            const isReadClass = n.read_status ? 'read' : '';
+                            
+                            container.innerHTML += `
+                                <div class="notification-card ${isReadClass}">
+                                    <p><strong>${n.notification_type}:</strong> ${n.content}</p>
+                                    <small>${new Date(n.creation_datetime).toLocaleString()}</small>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<p style="text-align:center;">No notifications found.</p>';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('notification-container').innerHTML = '<p style="text-align:center; color:red;">Error loading notifications.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
